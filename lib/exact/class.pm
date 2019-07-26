@@ -3,6 +3,8 @@ package exact::class;
 
 use 5.014;
 use exact;
+use Role::Tiny ();
+use Scalar::Util;
 
 # VERSION
 
@@ -12,12 +14,15 @@ sub import {
     my ( $self, $caller, $params ) = @_;
     $caller //= caller();
 
-    my @methods = qw( new tap attr class_has has );
+    my @methods = qw( new tap attr class_has has with_roles with );
     {
         no strict 'refs';
-        *{ $caller . '::' . $_ } = \&$_ for (@methods);
-        *{ $caller . $store }    = {};
+        for (@methods) {
+            *{ $caller . '::' . $_ } = \&$_ unless ( defined &{ $caller . '::' . $_ } );
+        }
+        *{ $caller . $store } = {};
     }
+
     exact->autoclean( -except => [@methods] );
 }
 
@@ -109,6 +114,24 @@ sub has {
         ${ $caller . $store }->{name}{$name}  = 1;
         ${ $caller . $store }->{has}{$name}   = 1;
     }
+}
+
+sub with {
+    return Role::Tiny->apply_roles_to_package( scalar(caller), @_ );
+}
+
+sub with_roles {
+    my ( $self, @roles ) = @_;
+
+    return Role::Tiny->create_class_with_roles(
+        $self,
+        map { /^\+(.+)$/ ? "${self}::Role::$1" : $_ } @roles
+    ) unless ( my $class = Scalar::Util::blessed $self );
+
+    return Role::Tiny->apply_roles_to_object(
+        $self,
+        map { /^\+(.+)$/ ? "${class}::Role::$1" : $_ } @roles
+    );
 }
 
 1;
