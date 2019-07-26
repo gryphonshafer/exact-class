@@ -8,7 +8,7 @@ use Role::Tiny ();
 # VERSION
 
 sub import {
-    my ( $self, $caller, $params ) = @_;
+    my ( $self, $caller ) = @_;
     $caller //= caller();
 
     eval qq{
