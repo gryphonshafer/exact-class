@@ -274,6 +274,9 @@ instead write:
     with 'Some::Role1';
     with 'Some::Role2';
 
+You will almost certainly want to read the documentation for L<exact::role> for
+writing roles.
+
 =head1 METHODS
 
 L<exact::class> implements the following methods:
