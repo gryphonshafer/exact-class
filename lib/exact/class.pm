@@ -52,12 +52,13 @@ sub new {
 
 sub tap {
     my ( $self, $cb ) = ( shift, shift );
-    $self->$cb(@_);
+    $_->$cb(@_) for $self;
     return $self;
 }
 
 sub attr {
     my ( $self, $attrs, $value ) = @_;
+    my $caller = ref($self) || $self;
 
     for my $name ( ( ref $attrs ) ? @$attrs : $attrs ) {
         my $accessor = sub {
@@ -75,15 +76,20 @@ sub attr {
         {
             no strict 'refs';
             no warnings 'redefine';
-            *{ ref($self) . '::' . $name } = $accessor;
-        }
 
-        $self->$name($value) if ( @_ > 2 );
+            *{ $caller . '::' . $name } = $accessor;
+
+            if ( ref $self ) {
+                $self->$name($value) if ( @_ > 2 );
+            }
+            else {
+                ${ $caller . $store }->{value}{$name} = $value if ( @_ > 2 );
+                ${ $caller . $store }->{name}{$name}  = 1;
+                ${ $caller . $store }->{has}{$name}   = 1;
+            }
+        }
     }
 }
-
-# TODO: merge class_has and has
-# TODO: support callbacks as values
 
 sub class_has {
     my ( $attrs, $value ) = @_;
@@ -93,7 +99,7 @@ sub class_has {
         no strict 'refs';
         croak "$name already defined" if ( exists ${ $caller . $store }->{name}{$name} );
 
-        *{ caller() . '::' . $name } = sub {
+        *{ $caller . '::' . $name } = sub {
             my ( $self, $value ) = @_;
 
             if ( @_ > 1 ) {
@@ -118,7 +124,7 @@ sub has {
         no strict 'refs';
         croak "$name already defined" if ( exists ${ $caller . $store }->{name}{$name} );
 
-        *{ caller() . '::' . $name } = sub {
+        *{ $caller . '::' . $name } = sub {
             my ( $self, $value ) = @_;
 
             if ( @_ > 1 ) {
@@ -241,14 +247,12 @@ L<exact::class> implements the following functions:
 Create attributes and associated accessors for hash-based objects.
 
     has 'name';
-    has ['name1', 'name2', 'name3'];
-    has name => 'foo';
-    has name => sub {...};
-    has ['name1', 'name2', 'name3'] => 'foo';
-    has ['name1', 'name2', 'name3'] => sub {...};
-    has name => sub {...};
-    has name => undef;
-    has ['name1', 'name2', 'name3'] => sub {...};
+    has [ 'name1', 'name2', 'name3' ];
+    has name4 => undef;
+    has name5 => 'foo';
+    has name6 => sub {...};
+    has [ 'name7', 'name8', 'name9' ]    => 'foo';
+    has [ 'name10', 'name11', 'name12' ] => sub {...};
 
 Then whenever you have an object:
 
