@@ -115,7 +115,7 @@ sub ____attrs {
                         return $self;
                     }
                     else {
-                        return $self->{$name};
+                        return ( ref $self->{$name} eq 'CODE' ) ? $self->{$name}->($self) : $self->{$name};
                     }
                 }
                 : sub {
@@ -127,7 +127,9 @@ sub ____attrs {
                         return $self;
                     }
                     else {
-                        return ${ $set->{caller} . $store }->{value}{$name};
+                        return ( ref ${ $set->{caller} . $store }->{value}{$name} eq 'CODE' )
+                            ? ${ $set->{caller} . $store }->{value}{$name}->($self)
+                            : ${ $set->{caller} . $store }->{value}{$name};
                     }
                 };
 

@@ -21,6 +21,7 @@ my $thing = q/
 my ( $obj, $obj2 );
 lives_ok( sub { eval $thing }, 'package definition indirect' );
 lives_ok( sub { Thing->attr( password => 12345 ) }, 'Package->attr(...)' );
+lives_ok( sub { Thing->attr( method => sub { $_[0]->password } ) }, 'Package->attr( sub {...} )' );
 lives_ok( sub { $obj = Thing->new( answer => 42 ) }, 'new( answer => 42 )' );
 lives_ok( sub { $obj2 = Thing->new( { answer => 43 } ) }, 'new( { answer => 43 } )' );
 
@@ -37,9 +38,9 @@ sub exercise {
     is( $obj->name2, undef, 'name2 returns undef' );
     is( $obj->name4, undef, 'name4 returns undef' );
     is( $obj->name5, 'foo', 'name5 returns correct value' );
-    # is( $obj->name6, 1024, 'name6 returns correct value' );
+    is( $obj->name6, 1024, 'name6 returns correct value' );
     is( $obj->name8, 'foo', 'name8 returns correct value' );
-    # is( $obj->name11, 1024, 'name6 returns correct value' );
+    is( $obj->name11, 1024, 'name6 returns correct value' );
 
     is( $obj->thing, 'shared', 'class_has value correct' );
     is( $obj2->thing, 'shared', 'class_has value correct' );
@@ -50,6 +51,8 @@ sub exercise {
     is( $obj->password, 12345, 'password value correct' );
     is( $obj->password(54321), $obj, 'password($value) returns object' );
     is( $obj->password, 54321, 'password value changed' );
+
+    is( $obj->method, 54321, 'password via "method" attr value' );
 
     lives_ok( sub { $obj->attr('attr0') }, q{attr('attr0')} );
     lives_ok( sub { $obj->attr( attr1 => 'value' ) }, q{attr( attr1 => 'value' )} );
@@ -70,6 +73,7 @@ $thing =~ s/package Thing/package ThingIndirect/;
 
 lives_ok( sub { eval $thing }, 'package definition direct' );
 lives_ok( sub { ThingIndirect->attr( password => 12345 ) }, 'Package->attr(...)' );
+lives_ok( sub { ThingIndirect->attr( method => sub { $_[0]->password } ) }, 'Package->attr( sub {...} )' );
 lives_ok( sub { $obj = ThingIndirect->new( answer => 42 ) }, 'new( answer => 42 )' );
 lives_ok( sub { $obj2 = ThingIndirect->new( { answer => 43 } ) }, 'new( { answer => 43 } )' );
 
