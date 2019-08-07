@@ -14,23 +14,38 @@ sub import {
     eval qq{
         package $caller {
             use Role::Tiny;
-            use exact 'class';
+            use exact 'class', 'noautoclean';
         };
     };
 
-    my @methods = qw(
-        does_role
-        apply_roles_to_package
-        apply_roles_to_object
-        create_class_with_roles
-        is_role
-    );
     {
         no strict 'refs';
-        for (@methods) {
-            *{ $caller . '::' . $_ } = \&$_ unless ( defined &{ $caller . '::' . $_ } );
+
+        for ('does_role') {
+            my $method = "Role::Tiny::$_";
+            *{ 'exact::role::' . $_ } = \&$method unless ( defined &{ $caller . '::' . $_ } );
         }
     }
+}
+
+sub apply_roles_to_package {
+    shift;
+    Role::Tiny->apply_roles_to_package(@_);
+}
+
+sub apply_roles_to_object {
+    shift;
+    Role::Tiny->apply_roles_to_object(@_);
+}
+
+sub create_class_with_roles {
+    shift;
+    Role::Tiny->create_class_with_roles(@_);
+}
+
+sub is_role {
+    shift;
+    Role::Tiny->is_role(@_);
 }
 
 1;
@@ -52,6 +67,14 @@ __END__
 L<exact::role> is a tiny mechanism to create roles for use with L<exact::class>.
 It relies on L<Role::Tiny>, which is to say, it just integrates L<Role::Tiny>
 with L<exact::class> and L<exact>.
+
+Note that the C<noautoclean> option of L<exact> gets automatically switched on
+when you:
+
+    use exact role;
+
+This is to prevent all sorts of expected behaviors from L<Role::Tiny>. If you
+want autoclean functionality, it's left up to you to set that up.
 
 =head1 IMPORTED FUNCTIONS
 

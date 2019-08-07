@@ -81,7 +81,15 @@ sub class_has {
     };
 
     $set->{value} = $value if ( @_ > 1 );
-    return ____attrs($set);
+
+    try {
+        ____attrs($set);
+    }
+    catch ($e) {
+        croak($$e);
+    }
+
+    return;
 }
 
 sub has {
@@ -94,7 +102,15 @@ sub has {
     };
 
     $set->{value} = $value if ( @_ > 1 );
-    return ____attrs($set);
+
+    try {
+        ____attrs($set);
+    }
+    catch ($e) {
+        croak($$e);
+    }
+
+    return;
 }
 
 sub ____attrs {
@@ -102,7 +118,7 @@ sub ____attrs {
         for my $name ( ( ref $set->{attrs} ) ? @{ $set->{attrs} } : $set->{attrs} ) {
             {
                 no strict 'refs';
-                die "$name already defined"
+                die \"$name already defined"
                     if ( not $set->{redefine} and exists ${ $set->{caller} . $store }->{name}{$name} );
             }
 
