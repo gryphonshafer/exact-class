@@ -58,88 +58,98 @@ sub tap {
 
 sub attr {
     my ( $self, $attrs, $value ) = @_;
-    my $caller = ref($self) || $self;
 
-    for my $name ( ( ref $attrs ) ? @$attrs : $attrs ) {
-        my $accessor = sub {
-            my ( $self, $value ) = @_;
+    my $set = {
+        attrs        => $attrs,
+        caller       => ref($self) || $self,
+        set_has      => 1,
+        self         => $self,
+        obj_accessor => 1,
+        redefine     => 1,
+    };
 
-            if ( @_ > 1 ) {
-                $self->{$name} = $value;
-                return $self;
-            }
-            else {
-                return $self->{$name};
-            }
-        };
-
-        {
-            no strict 'refs';
-            no warnings 'redefine';
-
-            *{ $caller . '::' . $name } = $accessor;
-
-            if ( ref $self ) {
-                $self->$name($value) if ( @_ > 2 );
-            }
-            else {
-                ${ $caller . $store }->{value}{$name} = $value if ( @_ > 2 );
-                ${ $caller . $store }->{name}{$name}  = 1;
-                ${ $caller . $store }->{has}{$name}   = 1;
-            }
-        }
-    }
+    $set->{value} = $value if ( @_ > 2 );
+    return ____attrs($set);
 }
 
 sub class_has {
     my ( $attrs, $value ) = @_;
-    my $caller = caller();
 
-    for my $name ( ( ref $attrs ) ? @$attrs : $attrs ) {
-        no strict 'refs';
-        croak "$name already defined" if ( exists ${ $caller . $store }->{name}{$name} );
+    my $set = {
+        attrs  => $attrs,
+        caller => scalar( caller() ),
+    };
 
-        *{ $caller . '::' . $name } = sub {
-            my ( $self, $value ) = @_;
-
-            if ( @_ > 1 ) {
-                ${ $caller . $store }->{value}{$name} = $value;
-                return $self;
-            }
-            else {
-                return ${ $caller . $store }->{value}{$name};
-            }
-        };
-
-        ${ $caller . $store }->{value}{$name} = $value if ( @_ > 1 );
-        ${ $caller . $store }->{name}{$name}  = 1;
-    }
+    $set->{value} = $value if ( @_ > 1 );
+    return ____attrs($set);
 }
 
 sub has {
     my ( $attrs, $value ) = @_;
-    my $caller = caller();
 
-    for my $name ( ( ref $attrs ) ? @$attrs : $attrs ) {
-        no strict 'refs';
-        croak "$name already defined" if ( exists ${ $caller . $store }->{name}{$name} );
+    my $set = {
+        attrs   => $attrs,
+        caller  => scalar( caller() ),
+        set_has => 1,
+    };
 
-        *{ $caller . '::' . $name } = sub {
-            my ( $self, $value ) = @_;
+    $set->{value} = $value if ( @_ > 1 );
+    return ____attrs($set);
+}
 
-            if ( @_ > 1 ) {
-                ${ $caller . $store }->{value}{$name} = $value;
-                return $self;
+sub ____attrs {
+    for my $set (@_) {
+        for my $name ( ( ref $set->{attrs} ) ? @{ $set->{attrs} } : $set->{attrs} ) {
+            {
+                no strict 'refs';
+                die "$name already defined"
+                    if ( not $set->{redefine} and exists ${ $set->{caller} . $store }->{name}{$name} );
             }
-            else {
-                return ${ $caller . $store }->{value}{$name};
-            }
-        };
 
-        ${ $caller . $store }->{value}{$name} = $value if ( @_ > 1 );
-        ${ $caller . $store }->{name}{$name}  = 1;
-        ${ $caller . $store }->{has}{$name}   = 1;
+            my $accessor = ( $set->{obj_accessor} )
+                ? sub {
+                    my ( $self, $value ) = @_;
+
+                    if ( @_ > 1 ) {
+                        $self->{$name} = $value;
+                        return $self;
+                    }
+                    else {
+                        return $self->{$name};
+                    }
+                }
+                : sub {
+                    my ( $self, $value ) = @_;
+
+                    no strict 'refs';
+                    if ( @_ > 1 ) {
+                        ${ $set->{caller} . $store }->{value}{$name} = $value;
+                        return $self;
+                    }
+                    else {
+                        return ${ $set->{caller} . $store }->{value}{$name};
+                    }
+                };
+
+            {
+                no strict 'refs';
+                no warnings 'redefine';
+
+                *{ $set->{caller} . '::' . $name } = $accessor;
+
+                if ( ref $set->{self} ) {
+                    $set->{self}->$name( $set->{value} ) if ( exists $set->{value} );
+                }
+                else {
+                    ${ $set->{caller} . $store }->{has}{$name}   = 1 if ( $set->{set_has} );
+                    ${ $set->{caller} . $store }->{name}{$name}  = 1;
+                    ${ $set->{caller} . $store }->{value}{$name} = $set->{value} if ( exists $set->{value} );
+                }
+            }
+        }
     }
+
+    return;
 }
 
 sub with {
