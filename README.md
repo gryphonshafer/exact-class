@@ -37,40 +37,40 @@ return their invocant whenever they are used to assign a new attribute value.
 The interface and much of the code is highly influenced (i.e. plagiarized) from
 the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny).
 
-package Cat;
-use exact class;
+    package Cat;
+    use exact class;
 
-\# ...or if you want to use it directly (which will also use exact):
-\# use exact::class;
+    # ...or if you want to use it directly (which will also use exact):
+    # use exact::class;
 
-has name => 'Unnamed';
-has \['age', 'weight'\] => 4;
+    has name => 'Unnamed';
+    has ['age', 'weight'] => 4;
 
-package AttackCat;
-use exact class;
-use parent 'Cat';
+    package AttackCat;
+    use exact class;
+    use parent 'Cat';
 
-has attack => 4;
-has thac0  => -3;
+    has attack => 4;
+    has thac0  => -3;
 
-class\_has hp => 42;
+    class_has hp => 42;
 
-with 'Attack';
+    with 'Attack';
 
-package main;
-use exact;
+    package main;
+    use exact;
 
-my $cat = Cat->new( name => 'Hamlet' );
-say $cat->age;
-say $cat->age(3)->weight(5)->age;
+    my $cat = Cat->new( name => 'Hamlet' );
+    say $cat->age;
+    say $cat->age(3)->weight(5)->age;
 
-my $demon = AttackCat->new( attack => 5, hp => 1138 );
-say $demon->tap( sub { $\_->thac0(-4) } )->hp;
+    my $demon = AttackCat->new( attack => 5, hp => 1138 );
+    say $demon->tap( sub { $_->thac0(-4) } )->hp;
 
-$demon->attr( new\_attribute => 1024 );
-say $demon->new\_attribute;
+    $demon->attr( new_attribute => 1024 );
+    say $demon->new_attribute;
 
-my $devil = AttackCat->with\_roles('+Claw')->new;
+    my $devil = AttackCat->with_roles('+Claw')->new;
 
 # FUNCTIONS
 
