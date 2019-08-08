@@ -52,14 +52,14 @@ sub is_role {
 __END__
 =pod
 
+=head1 SYNOPSIS
+
 =begin :prelude
 
 =for test_synopsis
 no strict 'subs'
 
 =end :prelude
-
-=head1 SYNOPSIS
 
     package Claw;
     use exact role;

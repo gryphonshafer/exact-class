@@ -200,14 +200,14 @@ __END__
 
 =end :badges
 
+=head1 SYNOPSIS
+
 =begin :prelude
 
 =for test_synopsis
 no strict 'subs'
 
 =end :prelude
-
-=head1 SYNOPSIS
 
     package Cat;
     use exact class;
