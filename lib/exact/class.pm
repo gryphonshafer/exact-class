@@ -202,13 +202,6 @@ __END__
 
 =head1 SYNOPSIS
 
-=begin :prelude
-
-=for test_synopsis
-no strict 'subs'
-
-=end :prelude
-
     package Cat;
     use exact class;
 
