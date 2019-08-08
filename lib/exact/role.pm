@@ -17,15 +17,10 @@ sub import {
             use exact 'class', 'noautoclean';
         };
     };
+}
 
-    {
-        no strict 'refs';
-
-        for ('does_role') {
-            my $method = "Role::Tiny::$_";
-            *{ 'exact::role::' . $_ } = \&$method unless ( defined &{ $caller . '::' . $_ } );
-        }
-    }
+sub does_role {
+    Role::Tiny::does_role(@_);
 }
 
 sub apply_roles_to_package {
