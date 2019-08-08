@@ -11,32 +11,6 @@ version 1.01
 
 # SYNOPSIS
 
-# DESCRIPTION
-
-[exact::class](https://metacpan.org/pod/exact::class) is intended to be a simple class interface extension for
-[exact](https://metacpan.org/pod/exact). See the [exact](https://metacpan.org/pod/exact) documentation for additional informatioh about
-extensions. The intended use of [exact::class](https://metacpan.org/pod/exact::class) is via the extension interface
-of [exact](https://metacpan.org/pod/exact).
-
-    use exact class, conf, noutf8;
-
-However, you can also use it directly, which will also use [exact](https://metacpan.org/pod/exact) with
-default options:
-
-    use exact::class;
-
-Doing either of these will setup your namespace with some methods to make it
-easier to use it as a class with a fluent OO interface. Fluent OO interfaces
-are a way to design object-oriented APIs around method chaining to create
-domain-specific languages, with the goal of making the readablity of the source
-code close to written prose.
-
-All attribute accessors created with "has" (or "attr") or "class\_has" will
-return their invocant whenever they are used to assign a new attribute value.
-
-The interface and much of the code is highly influenced (i.e. plagiarized) from
-the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny).
-
     package Cat;
     use exact class;
 
@@ -71,6 +45,32 @@ the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny]
     say $demon->new_attribute;
 
     my $devil = AttackCat->with_roles('+Claw')->new;
+
+# DESCRIPTION
+
+[exact::class](https://metacpan.org/pod/exact::class) is intended to be a simple class interface extension for
+[exact](https://metacpan.org/pod/exact). See the [exact](https://metacpan.org/pod/exact) documentation for additional informatioh about
+extensions. The intended use of [exact::class](https://metacpan.org/pod/exact::class) is via the extension interface
+of [exact](https://metacpan.org/pod/exact).
+
+    use exact class, conf, noutf8;
+
+However, you can also use it directly, which will also use [exact](https://metacpan.org/pod/exact) with
+default options:
+
+    use exact::class;
+
+Doing either of these will setup your namespace with some methods to make it
+easier to use it as a class with a fluent OO interface. Fluent OO interfaces
+are a way to design object-oriented APIs around method chaining to create
+domain-specific languages, with the goal of making the readablity of the source
+code close to written prose.
+
+All attribute accessors created with "has" (or "attr") or "class\_has" will
+return their invocant whenever they are used to assign a new attribute value.
+
+The interface and much of the code is highly influenced (i.e. plagiarized) from
+the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny).
 
 # FUNCTIONS
 

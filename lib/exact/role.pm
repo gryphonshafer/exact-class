@@ -52,6 +52,13 @@ sub is_role {
 __END__
 =pod
 
+=begin :prelude
+
+=for test_synopsis
+no strict 'subs'
+
+=end :prelude
+
 =head1 SYNOPSIS
 
     package Claw;
