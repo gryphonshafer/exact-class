@@ -85,9 +85,9 @@ sub class_has {
     try {
         ____attrs($set);
     }
-    catch ($e) {
-        croak($$e);
-    }
+    catch {
+        croak($$_);
+    };
 
     return;
 }
@@ -106,9 +106,9 @@ sub has {
     try {
         ____attrs($set);
     }
-    catch ($e) {
-        croak($$e);
-    }
+    catch {
+        croak($$_);
+    };
 
     return;
 }
