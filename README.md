@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.02
+version 1.03
 
 [![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
@@ -12,7 +12,7 @@ version 1.02
 # SYNOPSIS
 
     package Cat;
-    use exact class;
+    use exact -class;
 
     # ...or if you want to use it directly (which will also use exact):
     # use exact::class;
@@ -20,8 +20,11 @@ version 1.02
     has name => 'Unnamed';
     has ['age', 'weight'] => 4;
 
+    # ...and just for this inline example:
+    BEGIN { $INC{'Cat.pm'} = 1 }
+
     package AttackCat;
-    use exact class;
+    use exact -class;
     use parent 'Cat';
 
     has attack => 4;

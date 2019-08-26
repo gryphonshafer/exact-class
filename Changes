@@ -1,6 +1,9 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Improved inheritance support of has variables
+        - Changed to use "-" prepending flags for compile check w00t
+        - Add back dist.ini components
 
 1.02      2019-08-13 14:59:29-07:00 America/Los_Angeles
         - Switch from TryCatch to Try::Tiny as provided by exact

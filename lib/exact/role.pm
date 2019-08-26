@@ -50,10 +50,10 @@ __END__
 =head1 SYNOPSIS
 
     package Claw;
-    use exact role;
+    use exact -role;
 
     package Cat;
-    use exact class;
+    use exact -class;
 
     with 'Claw';
 
@@ -66,7 +66,7 @@ with L<exact::class> and L<exact>.
 Note that the C<noautoclean> option of L<exact> gets automatically switched on
 when you:
 
-    use exact role;
+    use exact -role;
 
 This is to prevent all sorts of expected behaviors from L<Role::Tiny>. If you
 want autoclean functionality, it's left up to you to set that up.
