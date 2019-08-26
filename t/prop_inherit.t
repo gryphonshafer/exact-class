@@ -7,12 +7,14 @@ package Thing {
     has name => undef;
     has data => undef;
 
-    sub create ($self) {
+    sub create {
+        my ($self) = @_;
         $self->data( { $self->name => 42 } );
         return $self;
     }
 
-    sub fetch ($self) {
+    sub fetch {
+        my ($self) = @_;
         return $self->data;
     }
 };
@@ -23,12 +25,14 @@ package Thing::Role {
     has name2 => undef;
     has data2 => undef;
 
-    sub create2 ($self) {
+    sub create2 {
+        my ($self) = @_;
         $self->data2( { $self->name2 => 43 } );
         return $self;
     }
 
-    sub fetch2 ($self) {
+    sub fetch2 {
+        my ($self) = @_;
         return $self->data2;
     }
 }
