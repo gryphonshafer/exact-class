@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.04
+version 1.05
 
 [![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
@@ -20,12 +20,11 @@ version 1.04
     has name => 'Unnamed';
     has ['age', 'weight'] => 4;
 
-    # ...and just for this inline example:
+    # ...and just for this inline example we need:
     BEGIN { $INC{'Cat.pm'} = 1 }
 
     package AttackCat;
-    use exact -class;
-    use parent 'Cat';
+    use exact 'Cat';
 
     has attack => 4;
     has thac0  => -3;
@@ -56,7 +55,7 @@ version 1.04
 extensions. The intended use of [exact::class](https://metacpan.org/pod/exact::class) is via the extension interface
 of [exact](https://metacpan.org/pod/exact).
 
-    use exact class, conf, noutf8;
+    use exact -class, -conf, -noutf8;
 
 However, you can also use it directly, which will also use [exact](https://metacpan.org/pod/exact) with
 default options:
@@ -69,11 +68,24 @@ are a way to design object-oriented APIs around method chaining to create
 domain-specific languages, with the goal of making the readablity of the source
 code close to written prose.
 
-All attribute accessors created with "has" (or "attr") or "class\_has" will
-return their invocant whenever they are used to assign a new attribute value.
+## Subclasses
 
-The interface and much of the code is highly influenced (i.e. plagiarized) from
-the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny).
+Note that [exact::class](https://metacpan.org/pod/exact::class) will place itself as a parent to package in which it's
+used. If you setup a subclass to your package, that subclass should not also
+use [exact::class](https://metacpan.org/pod/exact::class), or else you'll probably end up with an inheritance error.
+
+## "Highly Influenced" Interface
+
+The interface and much of the code is "highly influenced" (i.e. plagiarized)
+from the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny). So much so that you can
+replace:
+
+    use Mojo::Base 'Mojolicious';
+    use Role::Tiny::With;
+
+...with:
+
+    use exact -class, 'Mojolicious';
 
 # FUNCTIONS
 
@@ -193,9 +205,7 @@ writing roles.
 You can look for additional information at:
 
 - [GitHub](https://github.com/gryphonshafer/exact-class)
-- [CPAN](http://search.cpan.org/dist/exact-class)
 - [MetaCPAN](https://metacpan.org/pod/exact::class)
-- [AnnoCPAN](http://annocpan.org/dist/exact-class)
 - [Travis CI](https://travis-ci.org/gryphonshafer/exact-class)
 - [Coveralls](https://coveralls.io/r/gryphonshafer/exact-class)
 - [CPANTS](http://cpants.cpanauthors.org/dist/exact-class)
