@@ -38,10 +38,13 @@ sub ____parents {
 }
 
 sub ____install {
-    my ( $self, $namespace ) = @_;
+    my ( $self, $namespace, $input ) = @_;
     if ( ref $store->{$namespace} eq 'HASH' ) {
         for my $name ( keys %{ $store->{$namespace}->{has} } ) {
-            if ( exists $store->{$namespace}->{value}{$name} ) {
+            if ( exists $input->{$name} ) {
+                $self->attr( $name, $input->{$name} );
+            }
+            elsif ( exists $store->{$namespace}->{value}{$name} ) {
                 $self->attr( $name, $store->{$namespace}->{value}{$name} );
             }
             else {
@@ -53,16 +56,17 @@ sub ____install {
 
 sub new {
     my $class = shift;
-    my $self  = bless( @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {}, ref $class || $class );
+    my $input = @_ ? @_ > 1 ? {@_} : { %{ $_[0] } } : {};
+    my $self  = bless( { %$input }, ref $class || $class );
 
     for my $namespace ( reverse ( ref $self, ____parents( ref $self ) ) ) {
         if ( ref $roles->{$namespace} eq 'ARRAY' ) {
             for my $role ( @{ $roles->{$namespace} } ) {
-                ____install( $self, $role );
+                ____install( $self, $role, $input );
             }
         }
 
-        ____install( $self, $namespace );
+        ____install( $self, $namespace, $input );
     }
 
     return $self;
