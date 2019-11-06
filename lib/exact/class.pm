@@ -150,7 +150,8 @@ sub ____attrs {
                         return $self;
                     }
                     else {
-                        return ( ref $self->{$name} eq 'CODE' ) ? $self->{$name}->($self) : $self->{$name};
+                        $self->{$name} = $self->{$name}->($self) if ( ref $self->{$name} eq 'CODE' );
+                        return $self->{$name};
                     }
                 }
                 : sub {
@@ -161,9 +162,11 @@ sub ____attrs {
                         return $self;
                     }
                     else {
-                        return ( ref $store->{ $set->{caller} }->{value}{$name} eq 'CODE' )
-                            ? $store->{ $set->{caller} }->{value}{$name}->($self)
-                            : $store->{ $set->{caller} }->{value}{$name};
+                        $store->{ $set->{caller} }->{value}{$name} =
+                            $store->{ $set->{caller} }->{value}{$name}->($self)
+                            if ( ref $store->{ $set->{caller} }->{value}{$name} eq 'CODE' );
+
+                        return $store->{ $set->{caller} }->{value}{$name};
                     }
                 };
 
