@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.07
+version 1.08
 
 [![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
@@ -50,9 +50,9 @@ version 1.07
 
 # DESCRIPTION
 
-[exact::class](https://metacpan.org/pod/exact::class) is intended to be a simple class interface extension for
+[exact::class](https://metacpan.org/pod/exact%3A%3Aclass) is intended to be a simple class interface extension for
 [exact](https://metacpan.org/pod/exact). See the [exact](https://metacpan.org/pod/exact) documentation for additional informatioh about
-extensions. The intended use of [exact::class](https://metacpan.org/pod/exact::class) is via the extension interface
+extensions. The intended use of [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) is via the extension interface
 of [exact](https://metacpan.org/pod/exact).
 
     use exact -class, -conf, -noutf8;
@@ -70,14 +70,14 @@ code close to written prose.
 
 ## Subclasses
 
-Note that [exact::class](https://metacpan.org/pod/exact::class) will place itself as a parent to package in which it's
+Note that [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) will place itself as a parent to package in which it's
 used. If you setup a subclass to your package, that subclass should not also
-use [exact::class](https://metacpan.org/pod/exact::class), or else you'll probably end up with an inheritance error.
+use [exact::class](https://metacpan.org/pod/exact%3A%3Aclass), or else you'll probably end up with an inheritance error.
 
 ## "Highly Influenced" Interface
 
 The interface and much of the code is "highly influenced" (i.e. plagiarized)
-from the excellent [Mojo::Base](https://metacpan.org/pod/Mojo::Base) and [Role::Tiny](https://metacpan.org/pod/Role::Tiny). So much so that you can
+from the excellent [Mojo::Base](https://metacpan.org/pod/Mojo%3A%3ABase) and [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny). So much so that you can
 replace:
 
     use Mojo::Base 'Mojolicious';
@@ -89,7 +89,7 @@ replace:
 
 # FUNCTIONS
 
-[exact::class](https://metacpan.org/pod/exact::class) implements the following functions:
+[exact::class](https://metacpan.org/pod/exact%3A%3Aclass) implements the following functions:
 
 ## has
 
@@ -102,11 +102,14 @@ Create attributes and associated accessors for hash-based objects.
     has name6 => sub {...};
     has [ 'name7', 'name8', 'name9' ]    => 'foo';
     has [ 'name10', 'name11', 'name12' ] => sub {...};
+    has name13 => \ sub {...};
 
 Then whenever you have an object:
 
     $object->name('Set This Name'); # returns $object
     say $object->name               # returns 'Set This Name'
+
+See also the ["attr"](#attr) section below.
 
 ## class\_has
 
@@ -119,7 +122,7 @@ all objects of that class, both present and future instantiated.
     with 'Some::Role1';
     with qw( Some::Role1 Some::Role2 );
 
-Composes a role into the current space via [Role::Tiny::With](https://metacpan.org/pod/Role::Tiny::With).
+Composes a role into the current space via [Role::Tiny::With](https://metacpan.org/pod/Role%3A%3ATiny%3A%3AWith).
 
 If you have conflicts and want to resolve them in favor of Some::Role1, you can
 instead write:
@@ -127,12 +130,12 @@ instead write:
     with 'Some::Role1';
     with 'Some::Role2';
 
-You will almost certainly want to read the documentation for [exact::role](https://metacpan.org/pod/exact::role) for
+You will almost certainly want to read the documentation for [exact::role](https://metacpan.org/pod/exact%3A%3Arole) for
 writing roles.
 
 # METHODS
 
-[exact::class](https://metacpan.org/pod/exact::class) implements the following methods:
+[exact::class](https://metacpan.org/pod/exact%3A%3Aclass) implements the following methods:
 
 ## new
 
@@ -155,13 +158,46 @@ hash reference with attribute values.
     SubClass->attr( name => sub {...} );
     SubClass->attr( name => undef );
     SubClass->attr( [ 'name1', 'name2', 'name3' ] => sub {...} );
+    SubClass->attr( 'name13' => \ sub {...} );
 
 Create attribute accessors for hash-based objects, an array reference can be
 used to create more than one at a time. Pass an optional second argument to set
-a default value, it should be a constant or a callback. The callback will be
-executed at accessor read time if there's no set value, and gets passed the
-current instance of the object as first argument. Accessors can be chained, that
-means they return their invocant when they are called with an argument.
+a default value, it should be a constant, a callback, or a reference to a
+callback.
+
+The direct callback will be executed at accessor read time if there's no set
+value, and gets passed the current instance of the object as first argument.
+Accessors can be chained, that means they return their invocant when they are
+called with an argument.
+
+### Code References
+
+Code references will be called on first access and passed a copy of the object.
+The return value of the code references will be saved in the attribute,
+replacing the reference.
+
+    package Cat;
+    use exact -class;
+    my $base = 41;
+    has name6 => sub { return ++$base };
+
+    package main;
+    my $cat = Cat->new;
+    say $cat->name6; # 42
+    say $cat->name6; # 42
+
+If you instead need a code reference stored permanently in an attribute, then
+use a reference to a code reference:
+
+    package Cat;
+    use exact -class;
+    my $base = 41;
+    has name6 => \ sub { return ++$base };
+
+    package main;
+    my $cat = Cat->new;
+    say $cat->name6->(); # 42
+    say $cat->name6->(); # 43
 
 ## tap
 
@@ -188,7 +224,7 @@ spliced or tapped into) a chained set of object method calls.
     my $new_class = SubClass->with_roles( '+One', '+Two' );
     $object       = $object->with_roles( '+One', '+Two' );
 
-Create a new class with one or more [Role::Tiny](https://metacpan.org/pod/Role::Tiny) roles. If called on a class
+Create a new class with one or more [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny) roles. If called on a class
 returns the new class, or if called on an object reblesses the object into the
 new class. For roles following the naming scheme "MyClass::Role::RoleName" you
 can use the shorthand "+RoleName".
@@ -197,7 +233,7 @@ can use the shorthand "+RoleName".
     my $new_class = SubClass->with_roles('+Foo');
     my $object    = $new_class->new;
 
-You will almost certainly want to read the documentation for [exact::role](https://metacpan.org/pod/exact::role) for
+You will almost certainly want to read the documentation for [exact::role](https://metacpan.org/pod/exact%3A%3Arole) for
 writing roles.
 
 # SEE ALSO
@@ -217,7 +253,7 @@ Gryphon Shafer <gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2019 by Gryphon Shafer.
+This software is copyright (c) 2020 by Gryphon Shafer.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

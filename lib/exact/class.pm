@@ -150,6 +150,11 @@ sub ____attrs {
                         return $self;
                     }
                     else {
+                        return ${ $self->{$name} } if (
+                            ref $self->{$name} eq 'REF' and
+                            ref ${ $self->{$name} } eq 'CODE'
+                        );
+
                         $self->{$name} = $self->{$name}->($self) if ( ref $self->{$name} eq 'CODE' );
                         return $self->{$name};
                     }
@@ -162,10 +167,14 @@ sub ____attrs {
                         return $self;
                     }
                     else {
+                        return ${ $store->{ $set->{caller} }->{value}{$name} } if (
+                            ref $store->{ $set->{caller} }->{value}{$name} eq 'REF' and
+                            ref ${ $store->{ $set->{caller} }->{value}{$name} } eq 'CODE'
+                        );
+
                         $store->{ $set->{caller} }->{value}{$name} =
                             $store->{ $set->{caller} }->{value}{$name}->($self)
                             if ( ref $store->{ $set->{caller} }->{value}{$name} eq 'CODE' );
-
                         return $store->{ $set->{caller} }->{value}{$name};
                     }
                 };
@@ -315,11 +324,14 @@ Create attributes and associated accessors for hash-based objects.
     has name6 => sub {...};
     has [ 'name7', 'name8', 'name9' ]    => 'foo';
     has [ 'name10', 'name11', 'name12' ] => sub {...};
+    has name13 => \ sub {...};
 
 Then whenever you have an object:
 
     $object->name('Set This Name'); # returns $object
     say $object->name               # returns 'Set This Name'
+
+See also the L</"attr"> section below.
 
 =head2 class_has
 
@@ -368,13 +380,46 @@ hash reference with attribute values.
     SubClass->attr( name => sub {...} );
     SubClass->attr( name => undef );
     SubClass->attr( [ 'name1', 'name2', 'name3' ] => sub {...} );
+    SubClass->attr( 'name13' => \ sub {...} );
 
 Create attribute accessors for hash-based objects, an array reference can be
 used to create more than one at a time. Pass an optional second argument to set
-a default value, it should be a constant or a callback. The callback will be
-executed at accessor read time if there's no set value, and gets passed the
-current instance of the object as first argument. Accessors can be chained, that
-means they return their invocant when they are called with an argument.
+a default value, it should be a constant, a callback, or a reference to a
+callback.
+
+The direct callback will be executed at accessor read time if there's no set
+value, and gets passed the current instance of the object as first argument.
+Accessors can be chained, that means they return their invocant when they are
+called with an argument.
+
+=head3 Code References
+
+Code references will be called on first access and passed a copy of the object.
+The return value of the code references will be saved in the attribute,
+replacing the reference.
+
+    package Cat;
+    use exact -class;
+    my $base = 41;
+    has name6 => sub { return ++$base };
+
+    package main;
+    my $cat = Cat->new;
+    say $cat->name6; # 42
+    say $cat->name6; # 42
+
+If you instead need a code reference stored permanently in an attribute, then
+use a reference to a code reference:
+
+    package Cat;
+    use exact -class;
+    my $base = 41;
+    has name6 => \ sub { return ++$base };
+
+    package main;
+    my $cat = Cat->new;
+    say $cat->name6->(); # 42
+    say $cat->name6->(); # 43
 
 =head2 tap
 
