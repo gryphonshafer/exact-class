@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.08
+version 1.09
 
 [![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
@@ -86,6 +86,11 @@ replace:
 ...with:
 
     use exact -class, 'Mojolicious';
+
+## Class::Method::Modifiers
+
+Note that Class::Method::Modifiers is injected into the namespace to provide
+support for: `before`, `around`, and `after`.
 
 # FUNCTIONS
 

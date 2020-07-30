@@ -5,6 +5,7 @@ use 5.014;
 use exact;
 use Role::Tiny ();
 use Scalar::Util ();
+use Class::Method::Modifiers ();
 
 # VERSION
 
@@ -22,6 +23,12 @@ sub import {
     }
 
     $store->{$caller} = {};
+
+    eval qq{
+        package $caller {
+            use Class::Method::Modifiers;
+        };
+    };
 
     for ( qw( has class_has with ) ) {
         exact->monkey_patch( $caller, $_, \&$_ ) unless ( defined &{ $caller . '::' . $_ } );
@@ -308,6 +315,11 @@ replace:
 ...with:
 
     use exact -class, 'Mojolicious';
+
+=head2 Class::Method::Modifiers
+
+Note that Class::Method::Modifiers is injected into the namespace to provide
+support for: C<before>, C<around>, and C<after>.
 
 =head1 FUNCTIONS
 
