@@ -51,7 +51,7 @@ version 1.09
 # DESCRIPTION
 
 [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) is intended to be a simple class interface extension for
-[exact](https://metacpan.org/pod/exact). See the [exact](https://metacpan.org/pod/exact) documentation for additional informatioh about
+[exact](https://metacpan.org/pod/exact). See the [exact](https://metacpan.org/pod/exact) documentation for additional information about
 extensions. The intended use of [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) is via the extension interface
 of [exact](https://metacpan.org/pod/exact).
 

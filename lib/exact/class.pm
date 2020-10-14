@@ -280,7 +280,7 @@ __END__
 =head1 DESCRIPTION
 
 L<exact::class> is intended to be a simple class interface extension for
-L<exact>. See the L<exact> documentation for additional informatioh about
+L<exact>. See the L<exact> documentation for additional information about
 extensions. The intended use of L<exact::class> is via the extension interface
 of L<exact>.
 
