@@ -1,6 +1,8 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Migrate Travis CI and Coveralls to GitHub Actions and Codecov
+        - Update copyright year
 
 1.09      2020-07-30 09:35:28-07:00 America/Los_Angeles
         - Inject Class::Method::Modifiers when using class

@@ -4,10 +4,10 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.09
+version 1.10
 
-[![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
-[![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
+[![build](https://github.com/gryphonshafer/exact-class/workflows/build/badge.svg)](https://github.com/gryphonshafer/exact-class/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/gryphonshafer/exact-class/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/exact-class)
 
 # SYNOPSIS
 
@@ -247,8 +247,8 @@ You can look for additional information at:
 
 - [GitHub](https://github.com/gryphonshafer/exact-class)
 - [MetaCPAN](https://metacpan.org/pod/exact::class)
-- [Travis CI](https://travis-ci.org/gryphonshafer/exact-class)
-- [Coveralls](https://coveralls.io/r/gryphonshafer/exact-class)
+- [GitHub Actions](https://github.com/gryphonshafer/exact-class/actions)
+- [Codecov](https://codecov.io/gh/gryphonshafer/exact-class)
 - [CPANTS](http://cpants.cpanauthors.org/dist/exact-class)
 - [CPAN Testers](http://www.cpantesters.org/distro/D/exact-class.html)
 
@@ -258,7 +258,7 @@ Gryphon Shafer <gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2020 by Gryphon Shafer.
+This software is copyright (c) 2021 by Gryphon Shafer.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
