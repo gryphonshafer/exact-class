@@ -233,8 +233,8 @@ __END__
 =begin :badges
 
 =for markdown
-[![Build Status](https://travis-ci.org/gryphonshafer/exact-class.svg)](https://travis-ci.org/gryphonshafer/exact-class)
-[![Coverage Status](https://coveralls.io/repos/gryphonshafer/exact-class/badge.png)](https://coveralls.io/r/gryphonshafer/exact-class)
+[![build](https://github.com/gryphonshafer/exact-class/workflows/build/badge.svg)](https://github.com/gryphonshafer/exact-class/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/gryphonshafer/exact-class/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/exact-class)
 
 =end :badges
 
@@ -477,8 +477,8 @@ You can look for additional information at:
 =for :list
 * L<GitHub|https://github.com/gryphonshafer/exact-class>
 * L<MetaCPAN|https://metacpan.org/pod/exact::class>
-* L<Travis CI|https://travis-ci.org/gryphonshafer/exact-class>
-* L<Coveralls|https://coveralls.io/r/gryphonshafer/exact-class>
+* L<GitHub Actions|https://github.com/gryphonshafer/exact-class/actions>
+* L<Codecov|https://codecov.io/gh/gryphonshafer/exact-class>
 * L<CPANTS|http://cpants.cpanauthors.org/dist/exact-class>
 * L<CPAN Testers|http://www.cpantesters.org/distro/D/exact-class.html>
 
