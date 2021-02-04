@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.11
+version 1.12
 
 [![test](https://github.com/gryphonshafer/exact-class/workflows/test/badge.svg)](https://github.com/gryphonshafer/exact-class/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/exact-class/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/exact-class)

@@ -115,7 +115,8 @@ sub class_has {
         ____attrs($set);
     }
     catch {
-        croak($$_);
+        my $e = $_ || $@;
+        croak($$e);
     };
 
     return;
@@ -136,7 +137,8 @@ sub has {
         ____attrs($set);
     }
     catch {
-        croak($$_);
+        my $e = $_ || $@;
+        croak($$e);
     };
 
     return;
