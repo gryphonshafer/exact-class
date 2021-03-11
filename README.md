@@ -4,7 +4,7 @@ exact::class - Simple class interface extension for exact
 
 # VERSION
 
-version 1.12
+version 1.13
 
 [![test](https://github.com/gryphonshafer/exact-class/workflows/test/badge.svg)](https://github.com/gryphonshafer/exact-class/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/exact-class/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/exact-class)
@@ -89,7 +89,7 @@ replace:
 
 ## Class::Method::Modifiers
 
-Note that Class::Method::Modifiers is injected into the namespace to provide
+Note that [Class::Method::Modifiers](https://metacpan.org/pod/Class%3A%3AMethod%3A%3AModifiers) is injected into the namespace to provide
 support for: `before`, `around`, and `after`.
 
 # FUNCTIONS
@@ -240,6 +240,35 @@ can use the shorthand "+RoleName".
 
 You will almost certainly want to read the documentation for [exact::role](https://metacpan.org/pod/exact%3A%3Arole) for
 writing roles.
+
+# CONSIDERATIONS AND CAVEATS
+
+Just as it is with [Mojo::Base](https://metacpan.org/pod/Mojo%3A%3ABase) and [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny), if you redefine anything
+(like a `has` or `class_has` or method) either within the same class or via
+inheritance or use of roles in any variety of ways, it will be redefined
+silently. Last redefinition wins. Obviously, this sort of power can be dangerous
+if it falls into the wrong hands.
+
+However, unlike [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny), composition using the `with` keyword and via a
+call to `with_roles` works exactly the same. For example, the `$cat_1` and
+`$cat_2` objects are equivalent with [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) but are not equivalent
+with [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny):
+
+    package CatWithRole {
+        use exact -class;
+        with 'Attack';
+    }
+
+    package CatWithNoRole {
+        use exact -class;
+    }
+
+    my $cat_1 = CatWithRole->new;
+    my $cat_2 = CatWithNoRole->new->with_roles('Attack');
+
+What happens with calling `with_roles` via [Role::Tiny](https://metacpan.org/pod/Role%3A%3ATiny) is that the resulting
+object will have any duplicate attributes from the role override the class,
+versus the [exact::class](https://metacpan.org/pod/exact%3A%3Aclass) way of the class overriding the role.
 
 # SEE ALSO
 

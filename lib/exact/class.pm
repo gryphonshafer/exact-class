@@ -239,7 +239,7 @@ sub with_roles {
         );
     }
 
-    ____role_attrs( Scalar::Util::blessed($object), [@_], $object );
+    ____role_attrs( Scalar::Util::blessed($object) || $object, [@_], $object );
     return $object;
 }
 
