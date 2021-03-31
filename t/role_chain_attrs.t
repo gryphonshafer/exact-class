@@ -35,7 +35,7 @@ my $direct_set_0 = Direct->new->remote(42);
 my $direct_set_1 = Direct->new->remote(1138);
 
 ok(
-    $direct_set_0->remote == 42 and $direct_set_1->remote == 1138,
+    ( $direct_set_0->remote == 42 and $direct_set_1->remote == 1138 ),
     'multiple direct remote attr do not bleed',
 );
 
@@ -43,7 +43,7 @@ my $indirect_set_0 = Indirect->new->remote(42);
 my $indirect_set_1 = Indirect->new->remote(1138);
 
 ok(
-    $indirect_set_0->remote == 42 and $indirect_set_1->remote == 1138,
+    ( $indirect_set_0->remote == 42 and $indirect_set_1->remote == 1138 ),
     'multiple indirect remote attr do not bleed',
 );
 

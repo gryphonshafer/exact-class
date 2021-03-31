@@ -1,6 +1,8 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Role chain attrs are set-able and don't bleed
+        - Role chain class attrs are set-able and do bleed
 
 1.13      2021-03-11 08:58:31-08:00 America/Los_Angeles
         - Role class_has attributes don't cross-contaminate beyond the class
