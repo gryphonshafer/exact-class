@@ -45,16 +45,28 @@ sub ____parents {
 
 sub ____install {
     my ( $self, $namespace, $input ) = @_;
+
     if ( ref $store->{struc}{$namespace} eq 'HASH' ) {
-        for my $name ( keys %{ $store->{struc}{$namespace}->{has} } ) {
-            if ( exists $input->{$name} ) {
-                $self->attr( $name, $input->{$name} );
+        my @has_names = keys %{ $store->{struc}{$namespace}->{has} };
+
+        for my $class_has_name (
+            grep {
+                my $name = $_;
+                not grep { $_ eq $name } @has_names;
+            } keys %{ $store->{struc}{$namespace}->{name} }
+        ) {
+            $self->$class_has_name( $input->{$class_has_name} ) if ( exists $input->{$class_has_name} );
+        }
+
+        for my $has_name (@has_names) {
+            if ( exists $input->{$has_name} ) {
+                $self->attr( $has_name, $input->{$has_name} );
             }
-            elsif ( exists $store->{struc}{$namespace}->{value}{$name} ) {
-                $self->attr( $name, $store->{struc}{$namespace}->{value}{$name} );
+            elsif ( exists $store->{struc}{$namespace}->{value}{$has_name} ) {
+                $self->attr( $has_name, $store->{struc}{$namespace}->{value}{$has_name} );
             }
             else {
-                $self->attr($name);
+                $self->attr($has_name);
             }
         }
     }
