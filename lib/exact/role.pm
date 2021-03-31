@@ -17,7 +17,6 @@ sub import {
             use exact 'class', 'noautoclean';
         };
     };
-    die $@ if ($@);
 }
 
 sub does_role {

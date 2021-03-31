@@ -1,6 +1,7 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Re-allow role composition to override role-provided methods
 
 1.14      2021-03-30 18:44:34-07:00 America/Los_Angeles
         - Role chain attrs are set-able and don't bleed

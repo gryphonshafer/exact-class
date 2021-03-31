@@ -29,7 +29,6 @@ sub import {
             use Class::Method::Modifiers;
         };
     };
-    die $@ if ($@);
 
     exact->monkey_patch( $caller, $_, \&$_ ) for ( qw( has class_has with ) );
 }
@@ -230,9 +229,17 @@ sub ____role_attrs {
 sub with {
     my $caller = scalar(caller);
     push( @{ $store->{roles}->{$caller} }, @_ );
-    my $result = Role::Tiny->apply_roles_to_package( $caller, @_ );
+
+    try {
+        Role::Tiny->apply_roles_to_package( $caller, $_ ) for @_;
+    }
+    catch ($e) {
+        $e =~ s/\s+at\s.+\sline\s\d+\.\s*$//g;
+        croak $e;
+    }
+
     ____role_attrs( $caller, [@_] );
-    return $result;
+    return;
 }
 
 sub with_roles {
