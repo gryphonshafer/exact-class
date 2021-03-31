@@ -9,7 +9,7 @@ use Class::Method::Modifiers ();
 
 # VERSION
 
-my ( $store, $roles );
+my $store;
 
 sub import {
     my ( $self, $caller ) = @_;
@@ -22,17 +22,16 @@ sub import {
         exact->add_isa( $self, $caller ) if ( $self eq 'exact::class');
     }
 
-    $store->{$caller} = {};
+    $store->{struc}{$caller} = {};
 
     eval qq{
         package $caller {
             use Class::Method::Modifiers;
         };
     };
+    die $@ if ($@);
 
-    for ( qw( has class_has with ) ) {
-        exact->monkey_patch( $caller, $_, \&$_ ) unless ( defined &{ $caller . '::' . $_ } );
-    }
+    exact->monkey_patch( $caller, $_, \&$_ ) for ( qw( has class_has with ) );
 }
 
 sub DESTROY {}
@@ -46,13 +45,13 @@ sub ____parents {
 
 sub ____install {
     my ( $self, $namespace, $input ) = @_;
-    if ( ref $store->{$namespace} eq 'HASH' ) {
-        for my $name ( keys %{ $store->{$namespace}->{has} } ) {
+    if ( ref $store->{struc}{$namespace} eq 'HASH' ) {
+        for my $name ( keys %{ $store->{struc}{$namespace}->{has} } ) {
             if ( exists $input->{$name} ) {
                 $self->attr( $name, $input->{$name} );
             }
-            elsif ( exists $store->{$namespace}->{value}{$name} ) {
-                $self->attr( $name, $store->{$namespace}->{value}{$name} );
+            elsif ( exists $store->{struc}{$namespace}->{value}{$name} ) {
+                $self->attr( $name, $store->{struc}{$namespace}->{value}{$name} );
             }
             else {
                 $self->attr($name);
@@ -67,8 +66,8 @@ sub new {
     my $self  = bless( { %$input }, ref $class || $class );
 
     for my $namespace ( reverse ( ref $self, ____parents( ref $self ) ) ) {
-        if ( ref $roles->{$namespace} eq 'ARRAY' ) {
-            for my $role ( @{ $roles->{$namespace} } ) {
+        if ( ref $store->{roles}{$namespace} eq 'ARRAY' ) {
+            for my $role ( @{ $store->{roles}->{$namespace} } ) {
                 ____install( $self, $role, $input );
             }
         }
@@ -152,19 +151,19 @@ sub ____attrs {
                     my ( $self, $value ) = @_;
 
                     if ( @_ > 1 ) {
-                        $store->{ $set->{caller} }->{value}{$name} = $value;
+                        $store->{struc}{ $set->{caller} }->{value}{$name} = $value;
                         return $self;
                     }
                     else {
-                        return ${ $store->{ $set->{caller} }->{value}{$name} } if (
-                            ref $store->{ $set->{caller} }->{value}{$name} eq 'REF' and
-                            ref ${ $store->{ $set->{caller} }->{value}{$name} } eq 'CODE'
+                        return ${ $store->{struc}{ $set->{caller} }->{value}{$name} } if (
+                            ref $store->{struc}{ $set->{caller} }->{value}{$name} eq 'REF' and
+                            ref ${ $store->{struc}{ $set->{caller} }->{value}{$name} } eq 'CODE'
                         );
 
-                        $store->{ $set->{caller} }->{value}{$name} =
-                            $store->{ $set->{caller} }->{value}{$name}->($self)
-                            if ( ref $store->{ $set->{caller} }->{value}{$name} eq 'CODE' );
-                        return $store->{ $set->{caller} }->{value}{$name};
+                        $store->{struc}{ $set->{caller} }->{value}{$name} =
+                            $store->{struc}{ $set->{caller} }->{value}{$name}->($self)
+                            if ( ref $store->{struc}{ $set->{caller} }->{value}{$name} eq 'CODE' );
+                        return $store->{struc}{ $set->{caller} }->{value}{$name};
                     }
                 };
 
@@ -178,9 +177,9 @@ sub ____attrs {
                 $set->{self}->$name( $set->{value} ) if ( exists $set->{value} );
             }
             else {
-                $store->{ $set->{caller} }->{has}{$name}   = 1 if ( $set->{set_has} );
-                $store->{ $set->{caller} }->{name}{$name}  = 1;
-                $store->{ $set->{caller} }->{value}{$name} = $set->{value} if ( exists $set->{value} );
+                $store->{struc}{ $set->{caller} }->{has}{$name}   = 1 if ( $set->{set_has} );
+                $store->{struc}{ $set->{caller} }->{name}{$name}  = 1;
+                $store->{struc}{ $set->{caller} }->{value}{$name} = $set->{value} if ( exists $set->{value} );
             }
         }
     }
@@ -193,19 +192,21 @@ sub ____role_attrs {
 
     for my $role (@$roles) {
         for my $name (
-            keys %{ $store->{$role}{name} }
+            keys %{ $store->{struc}{$role}{name} }
         ) {
             my $set = {
                 attrs  => $name,
                 caller => $caller,
             };
 
-            if ( $store->{$role}{has}{$name} ) {
+            if ( $store->{struc}{$role}{has}{$name} ) {
                 $set->{self}         = $object;
                 $set->{obj_accessor} = 1;
+                $set->{set_has}      = 1;
             }
 
-            $set->{value} = $store->{$role}{value}{$name} if ( exists $store->{$role}{value}{$name} );
+            $set->{value} = $store->{struc}{$role}{value}{$name}
+                if ( exists $store->{struc}{$role}{value}{$name} );
 
             ____attrs($set);
         }
@@ -216,7 +217,7 @@ sub ____role_attrs {
 
 sub with {
     my $caller = scalar(caller);
-    push( @{ $roles->{$caller} }, @_ );
+    push( @{ $store->{roles}->{$caller} }, @_ );
     my $result = Role::Tiny->apply_roles_to_package( $caller, @_ );
     ____role_attrs( $caller, [@_] );
     return $result;
