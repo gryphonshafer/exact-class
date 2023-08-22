@@ -1,6 +1,7 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Reorder package injection to ensure mods in <=36
 
 1.17      2023-08-21 18:36:06-07:00 America/Los_Angeles
         - Support for exact v1.21
