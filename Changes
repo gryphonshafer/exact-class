@@ -1,6 +1,7 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Support for exact v1.21
 
 1.16      2022-03-19 17:34:59-07:00 America/Los_Angeles
         - Minor documentation update

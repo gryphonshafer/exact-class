@@ -20,7 +20,7 @@ my %WriteMakefileArgs = (
     "Class::Method::Modifiers" => 0,
     "Role::Tiny" => 0,
     "Scalar::Util" => 0,
-    "exact" => "1.14",
+    "exact" => "1.21",
     "strict" => 0,
     "warnings" => 0
   },
@@ -31,8 +31,7 @@ my %WriteMakefileArgs = (
     "Test2::V0" => 0,
     "Test::More" => 0
   },
-  "VERSION" => "1.16
-    # longer version",
+  "VERSION" => "1.17",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -48,7 +47,7 @@ my %FallbackPrereqs = (
   "Scalar::Util" => 0,
   "Test2::V0" => 0,
   "Test::More" => 0,
-  "exact" => "1.14",
+  "exact" => "1.21",
   "strict" => 0,
   "warnings" => 0
 );

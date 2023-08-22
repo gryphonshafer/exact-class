@@ -26,6 +26,7 @@ sub import {
 
     eval qq{
         package $caller {
+            no feature 'class';
             use Class::Method::Modifiers;
         };
     };

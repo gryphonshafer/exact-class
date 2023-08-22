@@ -15,6 +15,7 @@ sub import {
         package $caller {
             use Role::Tiny;
             use exact 'class', 'noautoclean';
+            no feature 'class';
         };
     };
 }
