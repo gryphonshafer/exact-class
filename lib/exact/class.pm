@@ -3,33 +3,32 @@ package exact::class;
 
 use 5.014;
 use exact;
-use Role::Tiny ();
-use Scalar::Util ();
+use Import::Into;
+use feature                  ();
 use Class::Method::Modifiers ();
+use Role::Tiny               ();
+use Scalar::Util             ();
 
 # VERSION
 
 my $store;
+my ($perl_version) = $^V =~ /^v5\.(\d+)/;
 
 sub import {
-    my ( $self, $caller ) = @_;
+    my ( $self, $params, $caller ) = @_;
 
     if ($caller) {
         exact->late_parent;
     }
     else {
         $caller //= caller();
-        exact->add_isa( $self, $caller ) if ( $self eq 'exact::class');
+        exact->add_isa( $self, $caller ) if ( $self eq 'exact::class' );
     }
 
     $store->{struc}{$caller} = {};
 
-    eval qq{
-        package $caller {
-            use Class::Method::Modifiers;
-            no feature 'class';
-        };
-    };
+    Class::Method::Modifiers->import::into($caller);
+    feature->unimport('class') if ( $perl_version > 36 );
 
     exact->monkey_patch( $caller, $_, \&$_ ) for ( qw( has class_has with ) );
 }

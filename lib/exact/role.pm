@@ -3,21 +3,21 @@ package exact::role;
 
 use 5.014;
 use exact;
+use Import::Into;
+use feature    ();
 use Role::Tiny ();
 
 # VERSION
 
+my ($perl_version) = $^V =~ /^v5\.(\d+)/;
+
 sub import {
-    my ( $self, $caller ) = @_;
+    my ( $self, $params, $caller ) = @_;
     $caller //= caller();
 
-    eval qq{
-        package $caller {
-            use Role::Tiny;
-            use exact 'class', 'noautoclean';
-            no feature 'class';
-        };
-    };
+    Role::Tiny->import::into($caller);
+    exact->import::into( $caller, 'class', 'noautoclean' );
+    feature->unimport('class') if ( $perl_version > 36 );
 }
 
 sub does_role {
