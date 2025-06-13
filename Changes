@@ -1,6 +1,7 @@
 Revision history for exact::class
 
 {{$NEXT}}
+        - Add security policy as per CPANSec recommendation
 
 1.19      2023-09-12 21:05:22-07:00 America/Los_Angeles
         - New import signature change required by exact v1.23
