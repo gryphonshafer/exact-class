@@ -1,6 +1,8 @@
 Revision history for exact::class
 
 {{$NEXT}}
+
+1.20      2025-06-13 10:28:45-07:00 America/Los_Angeles
         - Add security policy as per CPANSec recommendation
 
 1.19      2023-09-12 21:05:22-07:00 America/Los_Angeles
